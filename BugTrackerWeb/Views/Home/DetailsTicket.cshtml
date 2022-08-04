@@ -1,0 +1,250 @@
+﻿@model BugTrackerWeb.Models.DetailsViewModel
+@using BugTrackerWeb.Controllers;
+@{
+    ViewData["Title"] = "Ticket Details";
+}
+
+
+<div class="container">
+    <h1>Ticket Details</h1>
+
+    <hr />
+    <div class="row mt-5">
+        <div class="col-md-5">
+            <dl>
+                <dt>
+                    Ticket Id
+                </dt>
+                <dd>
+                    @ViewBag.ticket.Id
+                </dd>
+                <dt>
+                    Title
+                </dt>
+                <dd>
+                    @ViewBag.ticket.Title
+                </dd>
+                <dt>
+                    Description
+                </dt>
+                <dd>
+                    @ViewBag.ticket.Description
+                </dd>
+                <dt>
+                    Priority
+                </dt>
+                <dd>
+                    @ViewBag.ticket.Priority
+                </dd>
+                <dt>
+                    Type
+                </dt>
+                <dd>
+                    @ViewBag.ticket.Type
+                </dd>
+                <dt>
+                    Status
+                </dt>
+                <dd>
+                    @ViewBag.ticket.Status
+                </dd>
+            </dl>
+        </div>
+
+        <div class="col-md-5">
+            <img src="@ViewBag.ticket.imgPath" alt="Image" />
+
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <h4 class="display-6">Project</h4>
+        <div class="col-12">
+
+            <div class="table-responsive-lg">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Project Id</th>
+                            <th>Title</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>@ViewBag.ticket.project.Id</td>
+                            <td>@ViewBag.ticket.project.title</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div class="row mt-5">
+        <h4 class="display-6">Responsible Members Of Ticket</h4>
+        <div class="col-12">
+
+            <div class="table-responsive-lg">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.users.Count > 0)
+                        {
+                            @foreach (var u in Model.users)
+                            {
+                                <tr>
+                                    <td>@u.Name</td>
+                                    <td>@u.Email</td>
+                                    <td>@u.Role</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3">No Members</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-5">
+        @*if current user is the submitter of the ticket then no need to show this detail*@
+        @if (!ViewBag.users.Email.Equals(HomeController.mEmail))
+        {
+            <h4 class="display-6">Submitter Of Ticket</h4>
+
+            <div class="col-12">
+
+                <div class="table-responsive-lg">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td>@ViewBag.users.Name</td>
+                                <td>@ViewBag.users.Email</td>
+                                <td>@ViewBag.users.Role</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        }
+
+
+    </div>
+
+    <div class="row mt-5">
+        <div class="row justify-content-between">
+            <h4 class="col-2 display-6">Comments</h4>
+            <div class="col-2">
+                <p>
+                    <a  class="btn btn-success" style=" margin-top: 5%; " onclick="showAddComment()">Add Comment</a>
+                </p>
+            </div>
+            <div class="col-12 mt-0" id="comment" style="display:none;">
+                <form asp-action="AddComment" asp-controller="Admin" method="post">
+                    <textarea class="form-control" name="comment"></textarea>
+                    <input type="hidden" name="ticketId" value="@ViewBag.ticket.Id" />
+                    <div class="row mb-5">
+                        <button type="submit" class="btn btn-success col-1" style=" margin-top: 1%;margin-left:1%; ">Comment</button>
+                        <a class="btn btn-danger  col-1" style=" margin-top: 1%; margin-left:2%;" onclick="hideAddComment()" >Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-12">
+
+            <div class="table-responsive-lg">
+                <table class="table">
+                    <thead >
+                        <tr>
+                            <th class="col-3">Comment By</th>
+                            <th>Comment</th>
+                            @*if user commented or user is admin then allow to delete the comment only*@
+                            
+                             <th class="col-1"></th>
+                            
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.comments.Count > 0)
+                        {
+                            @foreach (var c in ViewBag.comments)
+                            {
+                                <tr >
+                                    <td>@c.SubmittedBy.Name</td>
+                                    <td>@c.CommentText</td>
+                                    
+                                    <td>
+                                        @if (HomeController.mRole.Equals("Admin") || c.SubmittedBy.Email.Equals(HomeController.mEmail))
+                                        {
+                                            @Html.ActionLink("Delete", "DeleteComment", "Admin",new {Id = c.Id,ticketId= ViewBag.ticket.Id }, new { @class= "btn btn-danger" })
+                                            @*<button asp-action="deleteComment"  class="btn btn-danger" value="@c.Id" name="Id">Delete</button>*@
+                                        }
+                                    </td>
+                                    
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center">No Comments</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div>
+            @*if user is the submitter of the ticket or user is admin then allow to edit the ticket only*@
+            @if (HomeController.mRole.Equals("Admin") || ViewBag.users.Email.Equals(HomeController.mEmail))
+            {
+                @Html.ActionLink("Edit", "EditTicket", "Admin", new { id = ViewBag.ticket.Id });
+                <p class="d-inline">|</p>
+
+            }
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function showAddComment() {
+        var div = document.getElementById("comment");
+        div.style.display="block";
+    }
+    function hideAddComment() {
+        var div = document.getElementById("comment");
+        div.style.display="none";
+    }
+</script>

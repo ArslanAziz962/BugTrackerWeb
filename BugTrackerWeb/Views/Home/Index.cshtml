@@ -1,0 +1,201 @@
+﻿@model BugTrackerWeb.Models.DetailsViewModel
+@using BugTrackerWeb.Controllers;
+@{
+    ViewData["Title"] = "Home Page";
+}
+  
+   
+<div class="text-center">
+    <h1 class="display-4">Welcome @HomeController.mName</h1>
+    <p>Logged in as <span class="fw-bold">@HomeController.mRole</span>.</p>
+</div>
+
+<div class="container-fluid ">
+  
+    <div class="row">
+        @if (!HomeController.mRole.Equals("User"))
+        {
+        <div class="col-md-6">
+            @if (HomeController.mRole.Equals("Admin"))
+            {
+
+
+                <h3 class="display-5">Users</h3>
+            }
+            else
+            {
+                <h3 class="display-5">Team Members</h3>
+            }
+
+            <div class="table-responsive-lg d-block overflow-auto" style="max-height: 300px; border: 2px solid #d82948; border-radius: 1%;">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Role</th>
+                            @if (HomeController.mRole.Equals("Admin") || HomeController.mRole.Equals("ProjectManager"))
+                            {
+                                <th class="text-center">Action</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.users.Count > 0)
+                        {
+
+                            foreach (var u in Model.users)
+                            {
+                                <tr>
+                                    <td>@u.Email</td>
+                                    <td>@u.Name</td>
+                                    <td>@u.Role</td>
+                                    @*if user is the poject manager  or user is admin then allow to view Details only*@
+                                    @if (HomeController.mRole.Equals("Admin") || HomeController.mRole.Equals("ProjectManager"))
+                                    {
+                                        <td class="text-center">
+
+                                            @*@Html.ActionLink("Details", "DetailsUser", new { u = u }, new { @class = "btn btn-info" })*@
+                                            @*<a asp-action="DetailsUser" value="@u.Email&@u.Name&@u.Role" class="btn btn-info" name="user">Details</a>*@
+
+                                            <form asp-action="DetailsUser" method="post">
+                                                <input type="hidden" name="email" value="@u.Email" />
+                                                <input type="hidden" name="name" value="@u.Name" />
+                                                <input type="hidden" name="role" value="@u.Role" />
+                                                <input type="submit" class="btn btn-info" value="Details" />
+                                            </form>
+                                        </td>
+
+                                    }
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr class="text-center">
+                                <td colspan="4"> No records found</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+        <div class="col-md-6 ">
+            @if (HomeController.mRole.Equals("Admin"))
+            {
+                <h3 class="display-5">Current Projects</h3>
+            }
+            else
+            {
+
+            <h3 class="display-5">My Projects</h3>
+            }
+        <div class="table-responsive-lg d-block overflow-auto" style="max-height:300px; border: 2px solid #d82948; border-radius: 1%;">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Project Id</th>
+                        <th>Title</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                @if (Model.projects.Count > 0)
+                {
+
+                    foreach (var p in Model.projects)
+                    {
+                        <tr>
+                            <td>@p.Id</td>
+                            <td>@p.title</td>
+
+                            <td class="text-center">
+
+                                @*@Html.ActionLink("Details", "DetailsUser", new { u = u }, new { @class = "btn btn-info" })*@
+                                @*<a asp-action="DetailsUser" value="@u.Email&@u.Name&@u.Role" class="btn btn-info" name="user">Details</a>*@
+
+                                <form asp-action="DetailsProject" method="post">
+                                    <input type="hidden" name="id" value="@p.Id" />
+                                    <input type="hidden" name="title" value="@p.title" />
+                                    <input type="submit" class="btn btn-info" value="Details" />
+                                </form>
+                            </td>
+
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr class="text-center">
+                        <td colspan="3"> No records found</td>
+                    </tr>
+                }
+            </table>
+        </div>
+
+        </div>
+        }
+
+    <div class="col-12">
+        <h3 class="display-5">My Tickets</h3>
+        <div class="table-responsive-lg d-block overflow-auto mb-5" style="max-height:300px; border: 2px solid #d82948; border-radius: 1%;">
+            <table class="table table-striped ">
+                <thead class="table-dark">
+                    <tr>
+                        @*<th>Ticket Id</th>*@
+                        <th>Title</th>
+                        <th>Descrtion</th>
+
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.tickets.Count > 0)
+                    {
+                        @foreach (var t in Model.tickets)
+                        {
+                            <tr>
+                                @*<td>@t.Id</td>*@
+                                <td>@t.Title</td>
+                                <td>@t.Description</td>
+                                <td class="text-center">
+
+                                    @*@Html.ActionLink("Details", "DetailsUser", new { u = u }, new { @class = "btn btn-info" })*@
+                                    @*<a asp-action="DetailsUser" value="@u.Email&@u.Name&@u.Role" class="btn btn-info" name="user">Details</a>*@
+
+                                    <form asp-action="DetailsTicket" method="post">
+                                        <input type="hidden" name="id" value="@t.Id" />
+                                        <input type="hidden" name="title" value="@t.Title" />
+                                        <input type="hidden" name="description" value="@t.Description" />
+                                        <input type="hidden" name="priority" value="@t.Priority" />
+                                        <input type="hidden" name="type" value="@t.Type" />
+                                        <input type="hidden" name="status" value="@t.Status" />
+                                        <input type="hidden" name="imgPath" value="@t.imgPath" />
+                                        @*<input type="hidden" name="project" value="@t.project" />
+                                    <input type="hidden" name="submitter" value="@t.submitter" />*@
+                                        <input type="submit" class="btn btn-info" value="Details" />
+                                    </form>
+                                </td>
+
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center">No Tickets Yet</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+        </div>
+    
+
+
+</div>

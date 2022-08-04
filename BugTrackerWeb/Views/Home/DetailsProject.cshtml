@@ -1,0 +1,115 @@
+﻿@model BugTrackerWeb.Models.DetailsViewModel
+@using BugTrackerWeb.Controllers;
+@{
+    ViewData["Title"] = @ViewBag.project.title+"\'s Details";
+}
+
+<div class="container">
+    <h1>@ViewBag.project.title's Details</h1>
+
+    <hr />
+
+   
+        <div class="row mt-5">
+            <h4 class="display-6">@ViewBag.project.title's Member(s)</h4>
+            <div class="col-12">
+
+                <div class="table-responsive-lg">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.users.Count > 0)
+                            {
+                                @foreach (var u in Model.users)
+                                {
+                                    <tr>
+                                        <td>@u.Name</td>
+                                        <td>@u.Email</td>
+                                        <td>@u.Role</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3">No Members</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>   
+   
+        <div class="row mt-5">
+            <h4 class="display-6">Tickets to @ViewBag.project.title Project</h4>
+            <div class="col-12">
+
+                <div class="table-responsive-lg">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Priority</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                
+                                <th>Submitter</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.tickets.Count > 0)
+                            {
+                                @foreach (var t in Model.tickets)
+                                {
+                                    <tr>
+                                        <td>@t.Id</td>
+                                        <td>@t.Title</td>
+                                        <td>@t.Description</td>
+                                        <td>@t.Priority</td>
+                                        <td>@t.Type</td>
+                                        <td>@t.Status</td>
+                                        
+                                        <td>@t.submitter.Name</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="8" class="text-center">No Tickets Yet</td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+   
+        <div>
+
+            @*if user is the poject manager  or user is admin then allow to edit the project only*@
+            @if (HomeController.mRole.Equals("Admin") || HomeController.mRole.Equals("ProjectManager") )
+            {
+                @Html.ActionLink("Edit", "EditProject", "Admin", new { id = ViewBag.project.Id });
+                <p class="d-inline">|</p>
+
+            }
+
+            
+            <a asp-action="Index">Back to List</a>
+        </div>
+</div>
+

@@ -1,0 +1,102 @@
+﻿@model BugTrackerWeb.Models.DetailsViewModel
+@using BugTrackerWeb.Controllers;
+@{
+    ViewData["Title"] = @ViewBag.name+"\'s Details";
+}
+
+
+
+<div class="container">
+    <h1>@ViewBag.name's Details</h1>
+
+    <hr />
+
+    @if (Model.projects.Count <= 0)
+    {
+        <h1 class="display-5 text-center">No records found!!</h1>
+    }
+    else
+    {
+        <div class="row mt-5">
+            <h4 class="display-6">@ViewBag.name's Project(s)</h4>
+            <div class="col-12">
+
+                <div class="table-responsive-lg">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Project Id</th>
+                                <th>Title</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in Model.projects)
+                            {
+                                <tr>
+                                    <td>@p.Id</td>
+                                    <td>@p.title</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div><div class="row mt-5">
+            <h4 class="display-6">Tickets to @ViewBag.name's Project(s)</h4>
+            <div class="col-12">
+
+                <div class="table-responsive-lg">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Priority</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Project</th>
+                                <th>Submitter</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.tickets.Count > 0)
+                            {
+                                @foreach (var t in Model.tickets)
+                                {
+                                    <tr>
+                                        <td>@t.Id</td>
+                                        <td>@t.Title</td>
+                                        <td>@t.Description</td>
+                                        <td>@t.Priority</td>
+                                        <td>@t.Type</td>
+                                        <td>@t.Status</td>
+                                        <td>@t.project.title</td>
+                                        <td>@t.submitter.Name</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="8" class="text-center">No Tickets Yet</td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    }
+<div>
+
+   @Html.ActionLink("Edit", "EditUser", "Admin", new { email = ViewBag.user.Email }) | 
+    <a asp-action="Index">Back to List</a>
+</div>
+</div>
+

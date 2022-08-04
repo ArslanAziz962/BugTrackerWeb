@@ -1,0 +1,124 @@
+﻿@model BugTrackerWeb.Models.User
+@using BugTrackerWeb.Data;
+@using BugTrackerWeb.Controllers;
+
+@{
+    ViewData["Title"] = "EditUser";
+
+}
+
+<div class="container">
+    <h1>EditUser</h1>
+
+    <h4>User</h4>
+    <hr />
+    <div class="row justify-content-around">
+        @if (HomeController.mRole.Equals("Admin"))
+        {
+        <div class="col-md-6 bg-light p-5" style="border-radius:4%;">
+
+            <form asp-action="EditUser" method="post"  >
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" disabled />
+                    <input name="email" type="hidden" value="@Model.Email" />
+
+                </div>
+
+                <div class="form-group mt-3">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-3">
+                    <label asp-for="Role" class="control-label"></label>
+
+
+                    <select asp-for="Role" class="form-select">
+                        <option value="Admin">Admin</option>
+                        <option value="ProjectManager">Project Manager</option>
+                        <option value="Developer">Developer</option>
+                        <option value="User">User</option>
+                    </select>
+
+
+                    @*<input asp-for="Role" class="form-control" />*@
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-3">
+                    <input type="submit" value="Save" name="btn" class="btn btn-primary" />
+                </div>
+            </form>
+
+        </div>
+        }
+
+        <div class="col-md-4 bg-light p-5" style="border-radius:4%;">
+            @{
+                List<Project> projects;
+                if (HomeController.mRole.Equals("Admin"))
+                {
+                    projects = Project.getAllProjects();
+                }
+                else {
+                    // get only those projects where are assigned to project manager
+                    projects = Project.getProjects("select * from project p inner join ProjectAssignment pa on pa.ProjectId=p.id where pa.userId='" + HomeController.mEmail + "'");
+                }
+
+
+
+
+                List<Project> assignedProjects = BugTrackerWeb.Models.User.getAssignedProjects(Model.Email);
+                List<int> projectIds = new List<int>();
+                foreach (var p in assignedProjects)
+                {
+                    projectIds.Add(p.Id);
+                }
+
+
+            }
+            <form asp-action="EditUser" method="post">
+                <div class="form-group">
+                    <label class="form-label">Assign Projects</label>
+                    <br />
+                    @foreach (var p in projects)
+                    {
+                        if (!projectIds.Contains(p.Id))
+                        {
+                            <input type="checkbox" class="form-check-input" value="@p.Id" name="titles" /> @p.title
+                            <br />
+                        }
+                        else
+                        {
+                            <input type="checkbox" class="form-check-input" value="@p.Id" checked name="titles" /> @p.title
+                            <br />
+                        }
+                    }
+
+                    <input type="hidden" name="email" value="@Model.Email" />
+                    <input type="hidden" name="name" value="@Model.Name" />
+                    <input type="hidden" name="role" value="@Model.Role" />
+                </div>
+                <div class="form-group mt-3">
+                    <input type="submit" value="Assign" name="btn" class="btn btn-primary" />
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+    @if (ViewBag.updated == true)
+    {
+        <p class="col-12 text-success text-center mt-4 fw-bold" >Data updated successfully</p>
+    }
+    <div>
+        <form asp-action="DetailsUser" asp-controller="Home" method="post" class="form-group mt-3">
+            <input type="hidden" name="email" value="@Model.Email" />
+            <input type="submit" value="Back to Details" class="text-info" style="background: none; color: inherit; border: none; padding: 0; font: inherit; cursor: pointer; outline: inherit;" />
+            @*@Html.ActionLink("Back to Details", "DetailsUser", "Home", new { email = ViewBag.email })*@
+        </form>
+        @*<a asp-action="DetsilsUser" asp-controller="Home">Back to List</a>*@
+    </div>
+
+</div>

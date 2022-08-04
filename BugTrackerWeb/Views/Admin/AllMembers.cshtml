@@ -1,0 +1,75 @@
+﻿@model IEnumerable<BugTrackerWeb.Models.User>
+@using BugTrackerWeb.Controllers;
+@{
+    ViewData["Title"] = "AllMembers";
+}
+
+<h1 class="text-center">All Members</h1>
+
+<div class="container mt-4">
+    <hr />
+    @if (HomeController.mRole.Equals("Admin"))
+    {
+        <p>
+            <a asp-action="CreateUser" class="btn btn-success" style=" margin-left: 85%; ">Create New</a>
+        </p>
+    }
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </th>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Role)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Role)
+                        </td>
+                        <td>
+                            @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |*@
+                            <div class="row justify-content-center">
+                                <form asp-action="DetailsUser" asp-controller="Home" method="post" class="col-3">
+                                    <input type="hidden" name="email" value="@item.Email" />
+                                    <input type="hidden" name="name" value="@item.Name" />
+                                    <input type="hidden" name="role" value="@item.Role" />
+
+                                    @*remove default style of button*@
+                                    @*<a asp-action="DetailsUser" asp-controller="Home" type="submit">Details</a>*@
+                                    <input type="submit" value="Details" class="btn btn-info" @*style="background: none; color: inherit; border: none; padding: 0; font: inherit; cursor: pointer; outline: inherit;"*@ />
+                                </form>
+
+                                @*@Html.ActionLink("Details", "DetailsUser","Home", new {  user=item })*@@*|
+                                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+                                @if (HomeController.mRole.Equals("Admin"))
+                                {
+                                    <div class="col-3">
+                                        @Html.ActionLink("Delete", "DeleteUser", new { email = item.Email }, new { @class = "btn btn-danger" })
+                                    </div>
+                                }
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>

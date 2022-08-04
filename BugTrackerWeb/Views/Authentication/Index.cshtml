@@ -1,0 +1,59 @@
+﻿@model BugTrackerWeb.Models.User
+@{
+    ViewData["Title"] = "Login";
+    ViewBag.isLoggedIn = false;
+}
+
+@using (Html.BeginForm()) {
+<div class="container bg-light " style="margin-top:4%; border-radius:4%;">
+
+    <div class="row justify-content-center">
+        <h1 class="col-md-7  mt-5">Login </h1>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-2">
+            <label class="form-label"> Email</label>
+        </div>
+        <div class="col-md-5">
+            <input type="email" asp-for="Email" class="form-control" placeholder="example@email.com"  />
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-2">
+            <label class="form-label"> Password</label>
+        </div>
+        <div class="col-md-5">
+            <input type="password" class="form-control" asp-for="Password"/>
+        </div>
+    </div>
+    @if (ViewBag.invalid == true)
+    {
+        <div class="row justify-content-center mt-1">
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-5 ">
+                <p class="text-danger">Invalid Email or Password</p>
+            </div>
+        </div>
+    }
+    <div class="row justify-content-center mt-2">
+        <div class="col-md-5">
+
+        </div>
+        <div class="col-md-5">
+            <input type="submit" class="btn btn-success" />
+        </div>
+    </div>
+    <div class="row justify-content-center mt-1">
+        <div class="col-md-4">
+
+        </div>
+        <div class="col-md-5 mb-5">
+            Not a member? <a asp-action="Register"> Register here</a>
+        </div>
+    </div>
+
+</div>
+
+}

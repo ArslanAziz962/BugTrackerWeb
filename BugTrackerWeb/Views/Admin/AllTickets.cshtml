@@ -1,0 +1,84 @@
+﻿@model IEnumerable<BugTrackerWeb.Models.Ticket>
+@using BugTrackerWeb.Controllers; 
+@{
+    ViewData["Title"] = "AllTickets";
+}
+ <h1 class="text-center">All Tickets</h1>
+ <div class="container">
+     <hr />
+
+        <p>
+         <a asp-action="CreateTicket" class="btn btn-success" style=" margin-left: 85%; ">Issue New</a>
+     </p>
+     <table class="table">
+         <thead>
+             <tr>
+                 @*<th>
+                     @Html.DisplayNameFor(model => model.Id)
+                 </th>*@
+                 <th>
+                     @Html.DisplayNameFor(model => model.Title)
+                 </th>
+                 <th>
+                     @Html.DisplayNameFor(model => model.Description)
+                 </th>
+                 @*<th>
+                     @Html.DisplayNameFor(model => model.Priority)
+                 </th>
+                 <th>
+                     @Html.DisplayNameFor(model => model.Type)
+                 </th>
+                 <th>
+                     @Html.DisplayNameFor(model => model.Status)
+                 </th>*@
+                 <th></th>
+             </tr>
+         </thead>
+         <tbody>
+             @foreach (var item in Model)
+             {
+                 <tr>
+                     @*<td>
+                         @Html.DisplayFor(modelItem => item.Id)
+                     </td>*@
+                     <td>
+                         @Html.DisplayFor(modelItem => item.Title)
+                     </td>
+                     <td>
+                         @Html.DisplayFor(modelItem => item.Description)
+                     </td>
+                     @*<td>
+                         @Html.DisplayFor(modelItem => item.Priority)
+                     </td>
+                     <td>
+                         @Html.DisplayFor(modelItem => item.Type)
+                     </td>
+                     <td>
+                         @Html.DisplayFor(modelItem => item.Status)
+                     </td>*@
+                 <td>
+
+                     <div class="row justify-content-center">
+                         <form asp-action="DetailsTicket" asp-controller="Home" method="post" class="col-3">
+                             <input type="hidden" name="id" value="@item.Id" />
+                             @*<input type="hidden" name="title" value="@item.title" />*@
+                             <input type="submit" value="Details" class="btn btn-info" />
+                         </form>
+                         @if (HomeController.mRole.Equals("Admin"))
+                         {
+                             <div class="col-3">
+                                 @Html.ActionLink("Delete", "DeleteTicket", new { id = item.Id }, new { @class = "btn btn-danger" })
+                             </div>
+                         }
+                         </div>
+
+                     @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+                 </td>
+                 </tr>
+             }
+         </tbody>
+     </table>
+
+ </div>

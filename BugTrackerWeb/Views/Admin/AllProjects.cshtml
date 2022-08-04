@@ -1,0 +1,63 @@
+﻿@model IEnumerable<BugTrackerWeb.Models.Project>
+@using BugTrackerWeb.Controllers; 
+
+@{
+    ViewData["Title"] = "AllProjects";
+}
+
+<h1 class="text-center">All Projects</h1>
+
+<div class="container mt-4">
+    <hr />
+    @if (HomeController.mRole.Equals("Admin"))
+    {
+        <p>
+            <a asp-action="CreateProject" class="btn btn-success" style=" margin-left: 85%; ">Create New</a>
+        </p>
+    }
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.title)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.title)
+                        </td>
+                        <td>
+
+                            <div class="row justify-content-center">
+                                <form asp-action="DetailsProject" asp-controller="Home" method="post" class="col-3">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input type="hidden" name="title" value="@item.title" />
+                                    <input type="submit" value="Details" class="btn btn-info" />
+                                </form>
+                                @if (HomeController.mRole.Equals("Admin"))
+                                {
+                                    <div class="col-3">
+
+                                        @Html.ActionLink("Delete", "DeleteProject", new { id = item.Id }, new { @class = "btn btn-danger" })
+                                    </div>
+                                }
+                                </div>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
